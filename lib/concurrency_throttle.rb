@@ -26,7 +26,7 @@ class ConcurrencyThrottle
     shuffled_ids = lock_ids.shuffle
     wait_for_id = shuffled_ids.pop if timeout
 
-    got_lock_id = shuffled_ids.detect { connection.get_advisory_lock(it) }
+    got_lock_id = shuffled_ids.detect { |id| connection.get_advisory_lock(id) }
     if !got_lock_id && wait_for_id && connection.get_advisory_lock(wait_for_id, timeout)
       got_lock_id = wait_for_id
     end
