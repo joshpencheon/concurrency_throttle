@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    concurrency_throttle (0.1.0)
+      activerecord (>= 7.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -36,14 +42,12 @@ GEM
       reline (>= 0.4.2)
     json (2.18.0)
     logger (1.7.0)
-    minitest (6.0.0)
-      prism (~> 1.5)
+    minitest (5.27.0)
     mysql2 (0.5.7)
       bigdecimal
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.7.0)
     psych (5.3.1)
       date
       stringio
@@ -67,11 +71,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (~> 8.1)
+  concurrency_throttle!
   irb (~> 1.16)
-  minitest
-  mysql2 (~> 0.5.7)
-  rake
+  minitest (~> 5.0)
+  mysql2 (~> 0.5)
+  rake (~> 13.0)
 
 BUNDLED WITH
    2.7.2

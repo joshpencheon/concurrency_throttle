@@ -2,6 +2,26 @@
 
 An experimental implementation of using MySQL advisory locks for cooperative rate-limited processing.
 
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'concurrency_throttle'
+```
+
+And then execute:
+
+```bash
+bundle install
+```
+
+Or install it yourself as:
+
+```bash
+gem install concurrency_throttle
+```
+
 ## Usage
 
 ```ruby
@@ -40,5 +60,5 @@ bundle exec rake
 Here's a list of things that would be nice to achieve:
 
 -[x] pick a better name for the module and public API (around "throttling").
--[ ] [package as a ruby gem]
+-[x] [package as a ruby gem]
 -[ ] Add GitHub Actions for testing.

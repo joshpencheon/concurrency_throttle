@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "concurrency_throttle/version"
+
 class ConcurrencyThrottle
   class ThrottleError < StandardError; end
 
