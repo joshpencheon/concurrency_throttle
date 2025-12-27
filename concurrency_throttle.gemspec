@@ -5,12 +5,11 @@ require_relative "lib/concurrency_throttle/version"
 Gem::Specification.new do |spec|
   spec.name = "concurrency_throttle"
   spec.version = ConcurrencyThrottle::VERSION
-  spec.authors = ["Josh"]
-  spec.email = ["josh@example.com"]
+  spec.authors = ["Josh Pencheon"]
 
   spec.summary = "Cooperative rate limiting with MySQL advisory locks"
   spec.description = "An implementation of cooperative rate-limited processing using MySQL advisory locks to coordinate concurrency limits across multiple processes."
-  spec.homepage = "https://github.com/yourusername/concurrency_throttle"
+  spec.homepage = "https://github.com/joshpencheon/limit_locks"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
 

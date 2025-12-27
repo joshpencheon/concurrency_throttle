@@ -49,7 +49,7 @@ time do |threads, concurrency, duration, timeout, work|
     )
 
     loop do
-      break unless lock.try_lock(timeout:) do
+      break unless lock.limit(timeout:) do
         if item = work.pop
           print "#{n}. "
           item

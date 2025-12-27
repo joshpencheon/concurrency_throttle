@@ -12,7 +12,7 @@ class ConcurrencyThrottle
     @duration = duration
   end
 
-  def try_lock(timeout: nil, &block)
+  def limit(timeout: nil, &block)
     with_concurrency_lock(timeout) do
       holding_for_duration { yield }
     end

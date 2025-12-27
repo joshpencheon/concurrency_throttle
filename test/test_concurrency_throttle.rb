@@ -19,7 +19,7 @@ class ConcurrencyThrottleTest < Minitest::Test
 
     assert_elapsed(0.2) do
       yielded = false
-      lock.try_lock { yielded = true }
+      lock.limit { yielded = true }
 
       assert yielded
     end
@@ -30,7 +30,7 @@ class ConcurrencyThrottleTest < Minitest::Test
 
     assert_raises("error once locked") do
       assert_elapsed(0.2, "should still hold the lock for the minimum duration") do
-        lock.try_lock { raise "error once locked" }
+        lock.limit { raise "error once locked" }
       end
     end
   end
@@ -41,7 +41,7 @@ class ConcurrencyThrottleTest < Minitest::Test
 
       assert_elapsed(0.2) do
         yielded = false
-        lock.try_lock { yielded = true }
+        lock.limit { yielded = true }
 
         assert yielded
       end
@@ -54,7 +54,7 @@ class ConcurrencyThrottleTest < Minitest::Test
 
       assert_elapsed_less_than(0.01, "should have raised immediately") do
         assert_raises(ConcurrencyThrottle::ThrottleError) do
-          lock.try_lock { }
+          lock.limit { }
         end
       end
     end
