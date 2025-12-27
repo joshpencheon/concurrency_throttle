@@ -34,3 +34,11 @@ To run the tests:
 ```
 bundle exec rake
 ```
+
+## TODO
+
+Here's a list of things that would be nice to achieve:
+
+-[ ] pick a better name for the module and public API (around "throttling").
+-[ ] [package as a ruby gem]
+-[ ] Add GitHub Actions for testing.
