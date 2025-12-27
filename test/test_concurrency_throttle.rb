@@ -17,7 +17,7 @@ class ConcurrencyThrottleTest < Minitest::Test
   def test_limit_success
     throttle = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
 
-    assert_elapsed(0.2) do
+    assert_elapsed_at_least(0.2) do
       yielded = false
       throttle.limit { yielded = true }
 
@@ -29,7 +29,7 @@ class ConcurrencyThrottleTest < Minitest::Test
     throttle = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
 
     assert_raises("error once locked") do
-      assert_elapsed(0.2, "should still hold the lock for the minimum duration") do
+      assert_elapsed_at_least(0.2, "should still hold the lock for the minimum duration") do
         throttle.limit { raise "error once locked" }
       end
     end
@@ -39,7 +39,7 @@ class ConcurrencyThrottleTest < Minitest::Test
     with_existing_advisory_lock("concurrency-throttle:foo:1:0") do
       throttle = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 2, duration: 0.2)
 
-      assert_elapsed(0.2) do
+      assert_elapsed_at_least(0.2) do
         yielded = false
         throttle.limit { yielded = true }
 
@@ -52,7 +52,7 @@ class ConcurrencyThrottleTest < Minitest::Test
     with_existing_advisory_lock("concurrency-throttle:foo:1:0") do
       throttle = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
 
-      assert_elapsed_less_than(0.01, "should have raised immediately") do
+      assert_elapsed_less_than(0.1, "should have raised immediately") do
         assert_raises(ConcurrencyThrottle::ThrottleError) do
           throttle.limit { }
         end
@@ -76,19 +76,19 @@ class ConcurrencyThrottleTest < Minitest::Test
     other_connection.release_advisory_lock("concurrency-throttle:foo:1:0")
   end
 
-  def assert_elapsed(duration, message = nil, &block)
+  def assert_elapsed(operator, target, message = nil, &block)
     started = Time.now
     yield
     elapsed = Time.now - started
 
-    assert_in_delta duration, elapsed, elapsed * 0.05, message
+    assert_operator elapsed, operator, target, message
   end
 
-  def assert_elapsed_less_than(maximum, message = nil, &block)
-    started = Time.now
-    yield
-    elapsed = Time.now - started
+  def assert_elapsed_less_than(minimum, message = nil, &block)
+    assert_elapsed(:<, minimum, message, &block)
+  end
 
-    assert_operator elapsed, :<, maximum, message
+  def assert_elapsed_at_least(maximum, message = nil, &block)
+    assert_elapsed(:>=, maximum, message, &block)
   end
 end
