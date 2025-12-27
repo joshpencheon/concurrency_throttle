@@ -1,5 +1,7 @@
 # ConcurrencyThrottle
 
+[![CI](https://github.com/yourusername/concurrency_throttle/workflows/CI/badge.svg)](https://github.com/yourusername/concurrency_throttle/actions)
+
 An experimental implementation of using MySQL advisory locks for cooperative rate-limited processing.
 
 ## Installation
@@ -61,4 +63,4 @@ Here's a list of things that would be nice to achieve:
 
 -[x] pick a better name for the module and public API (around "throttling").
 -[x] [package as a ruby gem]
--[ ] Add GitHub Actions for testing.
+-[x] Add GitHub Actions for testing.
