@@ -1,7 +1,7 @@
 require "bundler/setup"
 require "active_record"
 
-require_relative "lib/limit_lock"
+require_relative "lib/concurrency_throttle"
 
 ActiveRecord::Base.establish_connection(
   adapter:  "mysql2",
@@ -41,7 +41,7 @@ end
 
 time do |threads, concurrency, duration, timeout, work|
   in_threads(threads) do |n|
-    lock = LimitLock.new(
+    lock = ConcurrencyThrottle.new(
       connection: ActiveRecord::Base.connection,
       name: "testing",
       concurrency:,
@@ -56,7 +56,7 @@ time do |threads, concurrency, duration, timeout, work|
         end
       end
     end
-  rescue LimitLock::LockAcquisitionFailed => e
+  rescue ConcurrencyThrottle::ThrottleError => e
     print "#{n}! "
   end
 end

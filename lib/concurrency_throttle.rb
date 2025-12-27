@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class LimitLock
-  class LockAcquisitionFailed < StandardError; end
+class ConcurrencyThrottle
+  class ThrottleError < StandardError; end
 
   def initialize(connection:, name:, concurrency: 1, duration: 0)
     @connection = connection
@@ -29,7 +29,7 @@ class LimitLock
       got_lock_id = wait_for_id
     end
 
-    raise(LockAcquisitionFailed, "unable to get LimitLock: #{name}") unless got_lock_id
+    raise(ThrottleError, "unable to acquire throttle slot: #{name}") unless got_lock_id
 
     begin
       yield
@@ -40,7 +40,7 @@ class LimitLock
 
   def lock_ids
     @lock_ids ||= concurrency.times.map do |index|
-      "limit-lock:#{name}:#{concurrency}:#{index}"
+      "concurrency-throttle:#{name}:#{concurrency}:#{index}"
     end
   end
 

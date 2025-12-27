@@ -1,4 +1,4 @@
-# LimitLock
+# ConcurrencyThrottle
 
 An experimental implementation of using MySQL advisory locks for cooperative rate-limited processing.
 
@@ -7,11 +7,11 @@ An experimental implementation of using MySQL advisory locks for cooperative rat
 ```ruby
 connection = ActiveRecord::Base.connection
 
-lock = LimitLock.new(
+throttle = ConcurrencyThrottle.new(
   connection:,
 
   # Namespace/scope of the collaborative lock:
-  name: "the-lock-purpose",
+  name: "api-calls",
 
   # E.g. max 5 runs per 3 seconds:
   concurrency: 5,
@@ -19,12 +19,12 @@ lock = LimitLock.new(
 )
 
 # Raises an exception immediately if concurrency limit is already reached:
-result = lock.try_lock { make_api_call }
-# => result, or raises LimitLock::LockAcquisitionFailed
+result = throttle.try_lock { make_api_call }
+# => result, or raises ConcurrencyThrottle::ThrottleError
 
 # Waits up to 5 seconds before raising if concurrency limit is already reached:
-result = lock.try_lock(timeout: 5) { make_api_call }
-# => result, or raises LimitLock::LockAcquisitionFailed
+result = throttle.try_lock(timeout: 5) { make_api_call }
+# => result, or raises ConcurrencyThrottle::ThrottleError
 ```
 
 ## Development
@@ -39,6 +39,6 @@ bundle exec rake
 
 Here's a list of things that would be nice to achieve:
 
--[ ] pick a better name for the module and public API (around "throttling").
+-[x] pick a better name for the module and public API (around "throttling").
 -[ ] [package as a ruby gem]
 -[ ] Add GitHub Actions for testing.
