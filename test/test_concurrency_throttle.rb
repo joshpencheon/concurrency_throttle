@@ -14,47 +14,47 @@ ActiveRecord::Base.establish_connection(
 )
 
 class ConcurrencyThrottleTest < Minitest::Test
-  def test_try_lock_success
-    lock = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
+  def test_limit_success
+    throttle = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
 
     assert_elapsed(0.2) do
       yielded = false
-      lock.limit { yielded = true }
+      throttle.limit { yielded = true }
 
       assert yielded
     end
   end
 
-  def test_try_lock_with_exception
-    lock = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
+  def test_limit_with_exception
+    throttle = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
 
     assert_raises("error once locked") do
       assert_elapsed(0.2, "should still hold the lock for the minimum duration") do
-        lock.limit { raise "error once locked" }
+        throttle.limit { raise "error once locked" }
       end
     end
   end
 
-  def test_try_lock_success_with_concurrency
+  def test_limit_success_with_concurrency
     with_existing_advisory_lock("concurrency-throttle:foo:1:0") do
-      lock = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 2, duration: 0.2)
+      throttle = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 2, duration: 0.2)
 
       assert_elapsed(0.2) do
         yielded = false
-        lock.limit { yielded = true }
+        throttle.limit { yielded = true }
 
         assert yielded
       end
     end
   end
 
-  def test_try_lock_failure_without_concurrency
+  def test_limit_failure_without_concurrency
     with_existing_advisory_lock("concurrency-throttle:foo:1:0") do
-      lock = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
+      throttle = ConcurrencyThrottle.new(connection:, name: "foo", concurrency: 1, duration: 0.2)
 
       assert_elapsed_less_than(0.01, "should have raised immediately") do
         assert_raises(ConcurrencyThrottle::ThrottleError) do
-          lock.limit { }
+          throttle.limit { }
         end
       end
     end
