@@ -8,7 +8,7 @@ require_relative "../lib/concurrency_throttle"
 # Setup ActiveRecord connection to MySQL test database
 ActiveRecord::Base.establish_connection(
   adapter:  "mysql2",
-  host:     "localhost",
+  host:     ENV.fetch("MYSQL_HOST", "localhost"),
   username: "root",
   password: "",
 )
